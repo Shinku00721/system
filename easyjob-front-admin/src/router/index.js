@@ -9,8 +9,9 @@ const router = createRouter({
       component: () => import('../views/login/index.vue'),
     },
     {
-      path: '/home',
+      path: '/',
       name: 'layout',
+      redirect: '/home',
       component: () => import('@/layout/index.vue'),
       children: [
         {
@@ -22,9 +23,18 @@ const router = createRouter({
           path: '/content/question',
           name: '问题',
           component: () => import('@/views/content/question/index.vue'),
+        },
+        {
+          path: '/home',
+          name: '首页',
+          component: () => import('@/views/home/index.vue'),
+        },
+        {
+          path: '/setting/menu',
+          component: () => import('@/views/setting/menu/index.vue'),
         }
       ]
-    }
+    },
   ],
 })
 

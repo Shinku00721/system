@@ -12,6 +12,7 @@
           <Navbar></Navbar>
         </el-header>
         <el-main>
+          <Main></Main>
           <router-view></router-view>
         </el-main>
       </el-container>
@@ -24,6 +25,7 @@ import { reactive, ref ,onMounted} from 'vue'
 import Navbar from './components/navbar/index.vue'
 import Menu from './components/menu/index.vue'
 import Logo from './components/logo/index.vue'
+import Main from './components/main/index.vue'
 //获取菜单栏数据
 const menuList = reactive(JSON.parse(sessionStorage.getItem('userInfo')).menuList)
 onMounted(() => {
