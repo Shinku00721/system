@@ -5,12 +5,17 @@ import router from './router'
 // 引入element-plus组件
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
+//使用element-icon图标
+import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 //引入request
 import Request from '@/utils/request.js'
 //引入message
 import message from '@/utils/message.js'
 import VueCookies from 'vue-cookies'
 const app = createApp(App)
+for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
+  app.component(key, component)
+}
 app.use(router)
 app.use(ElementPlus)
 app.config.globalProperties.Request = Request

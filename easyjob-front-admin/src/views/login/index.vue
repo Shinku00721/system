@@ -16,7 +16,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { getCurrentInstance, onMounted, reactive, ref } from 'vue';
 import md5 from 'js-md5';
 import { useRouter } from 'vue-router';
