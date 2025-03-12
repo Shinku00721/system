@@ -8,10 +8,10 @@
         <Menu :menuList="menuList" class="menu"></Menu>
       </el-aside>
       <el-container class="layout-container">
-        <el-header>
+        <el-header class="header">
           <Navbar></Navbar>
         </el-header>
-        <el-main>
+        <el-main class="main">
           <Main></Main>
           <router-view></router-view>
         </el-main>
@@ -40,6 +40,7 @@ onMounted(() => {
   .layout-aside{
     display: flex;
     flex-direction: column;
+    position: fixed;
     .logo{
       height: 80px;
     }
@@ -50,7 +51,7 @@ onMounted(() => {
   .layout-container{
     display: flex;
     flex-direction: column;
-
+    margin-left: 200px;
   }
 }
 </style>
