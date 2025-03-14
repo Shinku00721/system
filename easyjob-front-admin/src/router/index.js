@@ -32,6 +32,9 @@ const router = createRouter({
         {
           path: '/setting/menu',
           component: () => import('@/views/setting/menu/index.vue'),
+        }, {
+          path: '/setting/role',
+          component: () => import('@/views/setting/role/index.vue')
         }
       ]
     },

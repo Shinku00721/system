@@ -7,15 +7,19 @@
         </div>
       </template>
       <el-tree
+      ref="treeRef"
       style="max-width: 600px;"
       :data="menuList"
       node-key="menuId"
       default-expand-all
+      :highlight-current="true"
       :expand-on-click-node="false"
       :props="defaultProps"
       @node-click="clickNode"
+      @current-change="currentChange"
     >
       <template #default="{ node, data }">
+        
         <div class="custom-tree-node">
           <span>{{node.label}}</span>
           <div class="tree-btn">
@@ -23,9 +27,9 @@
               <span>==</span>
                 <template #dropdown>
                   <el-dropdown-menu>
-                    <el-dropdown-item >添加子菜单</el-dropdown-item>
-                    <el-dropdown-item v-if="data.pId !== -1">修改</el-dropdown-item>
-                    <el-dropdown-item v-if="data.pId !== -1">删除</el-dropdown-item>
+                    <el-dropdown-item @click="showEditDialog('add')">添加子菜单</el-dropdown-item>
+                    <el-dropdown-item v-if="data.pId !== -1" @click="showEditDialog('edit',nodeForm)">修改</el-dropdown-item>
+                    <el-dropdown-item v-if="data.pId !== -1" @click="del">删除</el-dropdown-item>
                   </el-dropdown-menu>
                 </template>
             </el-dropdown>
@@ -55,14 +59,17 @@
         <el-form-item label="排序号">{{ nodeForm.sort }}</el-form-item>
       </el-form>
     </el-card>
+    <MenuEdit ref="menuEdit" :data="currentNode" :treeData="menuList" @reload="getMenuList"></MenuEdit>
   </div>
 </template>
 
 <script setup>
 import { MenuAPI } from '@/api/menu';
-import { onMounted, ref } from 'vue';
+import { nextTick, onMounted, ref } from 'vue';
 import { ArrowRight } from '@element-plus/icons-vue'
+import MenuEdit from './components/menuedit/index.vue'
 const menuList = ref([])
+const treeRef = ref()
 // 配置项
 const defaultProps = {
   label:'menuName',
@@ -72,11 +79,20 @@ const defaultProps = {
 
 //展示子节点的菜单数据
 const nodeForm =ref({})
-const menuName = ref([])
+let menuName = ref([])
+let currentNode = ref()
 const clickNode = (data,node) => {
+  //展示的数据
   Object.assign(nodeForm.value,data)
+  if(menuName.value.length>0){
+    menuName.value =[]
+  }
   menuName.value = getMenuName(node,menuName.value)
-  // console.log(menuName)
+  currentNode.value = node
+}
+
+const currentChange = (data,node) => {
+  menuName.value =[]
 }
 const getMenuName = (node,name) => {
   if(node.data.menuName){
@@ -88,14 +104,41 @@ const getMenuName = (node,name) => {
   return name
 }
 
-
-onMounted(async () => {
+const getMenuList = async () => {
   //获取全部的菜单数据
   let result = await MenuAPI.getMenuList()
   menuList.value = result
+}
+
+onMounted(async () => {
+  let result = await MenuAPI.getMenuList()
+  menuList.value = result
+  let first = result[0].children[0]
+  nextTick(() => {
+    treeRef.value.setCurrentKey(first.menuId)
+    const currentNode =  treeRef.value.getNode(first.menuId)
+    clickNode(currentNode.data,currentNode)
+  })
 })
 
-//便利菜单层级数据
+//新增或删除的方法
+const menuEdit = ref()
+const showEditDialog = (type,nodeForm) => {
+  menuEdit.value.showEditDialog(type,nodeForm)  //显示对话框
+}
+
+const del = async () => {
+  let params = {menuId:currentNode.value.data.menuId}
+  await MenuAPI.delMenu(params)
+  let result = await MenuAPI.getMenuList()
+  menuList.value = result
+  let first = result[0].children[0]
+  nextTick(() => {
+    treeRef.value.setCurrentKey(first.menuId)
+    const currentNode =  treeRef.value.getNode(first.menuId)
+    clickNode(currentNode.data,currentNode)
+  })
+}
 </script>
 
 <style lang="scss" scoped>
