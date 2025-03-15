@@ -15,11 +15,6 @@ const router = createRouter({
       component: () => import('@/layout/index.vue'),
       children: [
         {
-          path: '/content/category',
-          name: '分类',
-          component: () => import('@/views/content/category/index.vue'),
-        },
-        {
           path: '/content/question',
           name: '问题',
           component: () => import('@/views/content/question/index.vue'),
@@ -35,9 +30,26 @@ const router = createRouter({
         }, {
           path: '/setting/role',
           component: () => import('@/views/setting/role/index.vue')
+        }, {
+          path: '/setting/user',
+          component: () => import('@/views/setting/user/index.vue')
         }
       ]
     },
+
+
+    {
+      path: '/content',
+      name: '内容管理',
+      component: () => import('@/layout/index.vue'),
+      children: [
+        {
+          path: '/content/category',
+          name: '分类',
+          component: () => import('@/views/content/category/index.vue'),
+        }
+      ]
+    }
   ],
 })
 

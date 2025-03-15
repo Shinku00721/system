@@ -22,11 +22,11 @@
       :column="columns" 
       :fetch="loadDataList"
       :dataSource="tableData"
-      :option="tableOptions"
+      :options="tableOptions"
       :extHeight="tableOptions.extHeight"
       @row-click="handleRowClick"
       >
-        <template #operation="{index,row}">
+        <template #operation="{row}">
           <slot>
             
             <el-button type="primary" size="small" @click="updateRole(row)">修改</el-button>
@@ -80,6 +80,7 @@ const defaultProps = {
   value:'menuId'
 }
 const tableOptions = ref({
+  showIndex:true,
   extHeight:125
 })
 const columns = ref([
@@ -96,7 +97,7 @@ const columns = ref([
     prop:'createTime'
   },
   {
-    width:100,
+    width:200,
     label:'操作',
     scopedSlots:'operation'
   }
