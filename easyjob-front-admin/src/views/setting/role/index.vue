@@ -80,6 +80,7 @@ const defaultProps = {
   value:'menuId'
 }
 const tableOptions = ref({
+  showSelection:true,
   showIndex:true,
   extHeight:125
 })

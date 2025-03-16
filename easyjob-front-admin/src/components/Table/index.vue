@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-table :data="dataSource" v-if="dataSource.length" :highlight-current-row="true" @row-click="handleRowClick">
-      <el-table-column type="selection" width="55" />
+      <el-table-column type="selection" width="55" v-if="options.showSelection"/>
       <!-- 序号列 -->
       <el-table-column type='index' label="序号" width="150" v-if="options.showIndex"/>
       <!-- 展示数据 -->

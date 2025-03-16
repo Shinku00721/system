@@ -39,7 +39,7 @@
       </Table>
     </el-card>
     <!-- 新增或删除角色弹窗 -->
-    <EditUser :data="currentRow" ref="editUserRef"  @reload="loadUserList"></EditUser>
+    <EditUser ref="editUserRef"  @reload="loadUserList"></EditUser>
     <EditPassword ref="editPasswordRef"></EditPassword>
   </div>
 </template>
@@ -54,8 +54,8 @@ import { ElMessageBox } from 'element-plus';
 const editUserRef = ref()
 const editPasswordRef = ref()
 const tableData = ref([])
-const currentRow = ref({})
 const tableOptions = ref({
+  showSelection:true,
   showIndex:false,
   extHeight:125
 })

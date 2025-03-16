@@ -14,11 +14,15 @@ import message from '@/utils/message.js'
 import VueCookies from 'vue-cookies'
 //引入table全局组件
 import Table from '@/components/Table/index.vue'
+import Cover from '@/components/cover/index.vue'
+import CoverUpload from '@/components/coverupload/index.vue'
 const app = createApp(App)
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
   app.component(key, component)
 }
-app.component('Table', Table)
+app.component('Table', Table)  //表格
+app.component("Cover", Cover)  //展示图片
+app.component('CoverUpload', CoverUpload) //上传图片
 app.use(router)
 app.use(ElementPlus)
 app.config.globalProperties.Request = Request
