@@ -1,10 +1,9 @@
 <template>
   <div>
-    <el-tabs
+    <!-- <el-tabs
     type="card"
     editable
     class="demo-tabs"
-    @edit="handleTabsEdit"
   >
     <el-tab-pane
       v-for="item in editableTabs"
@@ -14,17 +13,17 @@
     >
       {{ item.content }}
     </el-tab-pane>
-  </el-tabs>
+  </el-tabs> -->
   </div>
 </template>
 
 <script setup>
-import { onMounted } from 'vue';
-import { useRoute } from 'vue-router';
-let route = useRoute();
-onMounted(() => {
-  console.log(route.matched)
-})
+// import { onMounted } from 'vue';
+// import { useRoute } from 'vue-router';
+// let route = useRoute();
+// onMounted(() => {
+//   console.log(route.matched)
+// })
 </script>
 
 <style lang="scss" scoped>

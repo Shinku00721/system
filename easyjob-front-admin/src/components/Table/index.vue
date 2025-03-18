@@ -26,22 +26,34 @@
         </el-table-column>
       </template>
     </el-table>
+    <div style="margin-top: 20px; float: right; margin-bottom: 20px;" v-if="options.showPage">
+      <el-pagination
+      v-model:current-page="pageOptions.currentPage"
+      v-model:page-size="pageOptions.pageSize"
+      :page-sizes="[3, 5, 7, 9]"
+      :background="background"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="props.pageOptions.total"
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+    />
+    </div>
   </div>
 </template>
 
 <script setup>
 import { onMounted,watch } from 'vue';
-const emit = defineEmits(['rowClick'])
+const emit = defineEmits(['rowClick','reload'])
 // const emit = defineEmits(['rowClick','rowSelected'])
 const props = defineProps({
   dataSource:{
     type:Array,
     default:[]
   },
-  // showPagination:{
-  //   type:Boolean,
-  //   default:true
-  // },
+  pageOptions:{
+    type:Object,
+    default:{}
+  },
   column:{
     type:Array,
     default:[]
@@ -65,6 +77,15 @@ const handleRowClick = (row) => {
   emit('rowClick',row)
 }
 
+//页码发生变化
+const handleSizeChange = () => {
+  emit('reload')
+}
+
+//页面发生变化
+const handleCurrentChange = () => {
+  emit('reload')
+}
 watch(
     () => props.dataSource, //这样才可以检测到对象里面的值
 )
@@ -72,7 +93,7 @@ watch(
     () => props.options, //这样才可以检测到对象里面的值
 )
 onMounted(() => {
-  console.log(props.options)
+  // console.log(props.options)
 })
 </script>
 

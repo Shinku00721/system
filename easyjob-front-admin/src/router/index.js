@@ -14,11 +14,7 @@ const router = createRouter({
       redirect: '/home',
       component: () => import('@/layout/index.vue'),
       children: [
-        {
-          path: '/content/question',
-          name: '问题',
-          component: () => import('@/views/content/question/index.vue'),
-        },
+
         {
           path: '/home',
           name: '首页',
@@ -45,9 +41,14 @@ const router = createRouter({
       children: [
         {
           path: '/content/category',
-          name: '分类',
+          name: '分类管理',
           component: () => import('@/views/content/category/index.vue'),
-        }
+        },
+        {
+          path: '/content/question',
+          name: '八股文管理',
+          component: () => import('@/views/content/question/index.vue'),
+        },
       ]
     }
   ],

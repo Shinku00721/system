@@ -16,6 +16,9 @@ import VueCookies from 'vue-cookies'
 import Table from '@/components/Table/index.vue'
 import Cover from '@/components/cover/index.vue'
 import CoverUpload from '@/components/coverupload/index.vue'
+import CategorySelect from "@/components/categoryselect/index.vue"
+import SunEditor from '@/components/suneditor/index.vue'
+import ImportData from '@/components/importdata/index.vue'
 const app = createApp(App)
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
   app.component(key, component)
@@ -23,6 +26,9 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 app.component('Table', Table)  //表格
 app.component("Cover", Cover)  //展示图片
 app.component('CoverUpload', CoverUpload) //上传图片
+app.component('CategorySelect', CategorySelect) //分类选择
+app.component('SunEditor', SunEditor) //富文本编辑器
+app.component('ImportData', ImportData)  //批量导入数据
 app.use(router)
 app.use(ElementPlus)
 app.config.globalProperties.Request = Request

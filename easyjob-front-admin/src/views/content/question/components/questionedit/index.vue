@@ -1,30 +1,33 @@
 <template>
   <div>
-    <el-dialog v-model="dialogConfig.show" width="600px">
+    <el-dialog v-model="dialogConfig.show" width="80%">
       <template #header>
         <h1 style="margin-bottom: 20px; font-size: 20px;">{{ dialogConfig.title }}</h1>
       </template>
       <el-form label-width="90px" :model="formData" :rules="rules" ref="formRef">
-        <el-form-item label="分类名称" prop="categoryName"><el-input placeholder="请输入分类名称" v-model="formData.categoryName"></el-input></el-form-item>
-        <el-form-item label="封面类型" prop="coverType">
-          <el-radio-group v-model="formData.coverType">
-            <el-radio value="0">背景颜色</el-radio>
-            <el-radio value="1">图片</el-radio>
-          </el-radio-group>
-        </el-form-item >
-        <el-form-item label="背景颜色" v-if="formData.coverType == 0" prop="bgColor">
-          <el-color-picker v-model="formData.bgColor"/>
-        </el-form-item>
-        <el-item-form v-if="formData.coverType == 1" class="cover-upload" prop="iconPath">
-          <CoverUpload v-model="formData.iconPath" :type="0"></CoverUpload>
-        </el-item-form>
-        <el-form-item label="类型" prop="type">
-          <el-radio-group v-model="formData.type">
-            <el-radio :value="0">问题分类</el-radio>
-            <el-radio :value="1">考题分类</el-radio>
-            <el-radio :value="2">问题/考题分类</el-radio>
-          </el-radio-group>
-        </el-form-item>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="标题" ><el-input placeholder="请输入标题名称" v-model="formData.title"></el-input></el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="分类" >
+              <CategorySelect :type="0" v-model="formData.categoryId"></CategorySelect>
+            </el-form-item >
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="难度"  >
+              <el-rate v-model="formData.difficultyLevel" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+       <el-row>
+        <el-col :span="12"><el-form-item label="问题">
+          <SunEditor v-model="formData.question"></SunEditor>
+        </el-form-item></el-col>
+        <el-col :span="12"><el-form-item label="答案分析">
+          <SunEditor v-model="formData.answerAnalysis"></SunEditor>
+        </el-form-item></el-col>
+       </el-row>
       </el-form>
       <template #footer>
       <div>
@@ -40,7 +43,7 @@
 
 <script setup>
 import { nextTick, onMounted, reactive, ref } from 'vue';
-import { CategoryApi } from '@/api/category';
+import { QuestionApi } from '@/api/question';
 import { ElMessage } from 'element-plus';
 const formRef = ref()
 const formData = ref({})
@@ -94,13 +97,8 @@ const confirm = () => {
   let params = {}
   //新增用户
   Object.assign(params,formData.value)
-  if(formData.value.coverType == 0){
-    delete params.iconPath
-  }else if(formData.value.coverType == 1){
-    delete params.bgColor
-  }
   formRef.value.validate().then(() => {
-    CategoryApi.saveCategory(params).then(res => {
+    QuestionApi.saveOrUpdateQuestion(params).then(res => {
     ElMessage({
       message: '保存成功',
       type: 'success',
@@ -131,23 +129,15 @@ const showDialog = (row={},) => {
   dialogConfig.value.show = true //显示对话框
   nextTick(() => {
   formRef.value?.resetFields()
-  if(row.categoryId){
+  console.log(row)
+  if(row.questionId){
     //修改
-    dialogConfig.value.title = '修改分类'
-    const {categoryName,type,categoryId} =row
-    formData.value = {categoryName,type,categoryId}
-    if(row.bgcolor !== null && row.bgcolor !== ''){
-      //背景颜色图
-      formData.value.coverType = '0'
-      formData.value.bgColor = row.bgColor
-    }else if(true){
-      //图片
-      formData.value.coverType = '1'
-      formData.value.iconPath = row.iconPath
-    }
+    dialogConfig.value.title = '修改问题'
+    const {questionId,title,categoryId,difficultyLevel,question,answerAnalysis} = row //拷贝对象
+    formData.value = {questionId,title,categoryId,difficultyLevel,question,answerAnalysis}
     
   }else{
-    dialogConfig.value.title = '新增分类'
+    dialogConfig.value.title = '新增问题'
      formData.value = {}
   }
   })
