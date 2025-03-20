@@ -21,7 +21,6 @@
       :dataSource="tableData"
       :options="tableOptions"
       :extHeight="tableOptions.extHeight"
-      @row-click="handleRowClick"
       >
       <template #status="{row}">
           <slot>

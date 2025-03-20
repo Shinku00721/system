@@ -13,11 +13,11 @@ import { ref } from 'vue';
 const categoryList = ref()
 const props = defineProps({
   type:{
-    type:String,
+    type:Number,
     default:'',
   },
   modelValue:{
-    type:Number,
+    type:String,
     default:'',
   }
 })

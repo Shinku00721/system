@@ -15,9 +15,9 @@
         <el-form-item label="背景颜色" v-if="formData.coverType == 0" prop="bgColor">
           <el-color-picker v-model="formData.bgColor"/>
         </el-form-item>
-        <el-item-form v-if="formData.coverType == 1" class="cover-upload" prop="iconPath">
+        <el-form-item v-if="formData.coverType == 1" class="cover-upload" prop="iconPath">
           <CoverUpload v-model="formData.iconPath" :type="0"></CoverUpload>
-        </el-item-form>
+        </el-form-item>
         <el-form-item label="类型" prop="type">
           <el-radio-group v-model="formData.type">
             <el-radio :value="0">问题分类</el-radio>

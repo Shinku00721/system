@@ -10,7 +10,6 @@
       :dataSource="tableData"
       :options="tableOptions"
       :extHeight="tableOptions.extHeight"
-      @row-click="handleRowClick"
       >
         <template #img="{row}">
           <Cover :cover="row.iconPath" :title="row.categoryName" :bgColor="row.bgColor"></Cover>

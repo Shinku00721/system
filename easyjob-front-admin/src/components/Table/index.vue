@@ -1,9 +1,9 @@
 <template>
   <div>
-    <el-table :data="dataSource" v-if="dataSource.length" :highlight-current-row="true" @row-click="handleRowClick">
+    <el-table :data="dataSource" v-if="dataSource.length" :highlight-current-row="true" @row-click="handleRowClick" @selection-change="handleSelect">
       <el-table-column type="selection" width="55" v-if="options.showSelection"/>
       <!-- 序号列 -->
-      <el-table-column type='index' label="序号" width="150" v-if="options.showIndex"/>
+      <el-table-column type='index' label="序号" width="55" v-if="options.showIndex"/>
       <!-- 展示数据 -->
       <template v-for="(column,index) in column" :key="index">
         <!-- 传入插槽 -->
@@ -22,6 +22,7 @@
         v-else
         :property="column.prop"
         :label="column.label"
+        :width="column.width"
         >
         </el-table-column>
       </template>
@@ -31,7 +32,7 @@
       v-model:current-page="pageOptions.currentPage"
       v-model:page-size="pageOptions.pageSize"
       :page-sizes="[3, 5, 7, 9]"
-      :background="background"
+      background
       layout="total, sizes, prev, pager, next, jumper"
       :total="props.pageOptions.total"
       @size-change="handleSizeChange"
@@ -43,7 +44,7 @@
 
 <script setup>
 import { onMounted,watch } from 'vue';
-const emit = defineEmits(['rowClick','reload'])
+const emit = defineEmits(['rowClick','reload','rowSelect'])
 // const emit = defineEmits(['rowClick','rowSelected'])
 const props = defineProps({
   dataSource:{
@@ -77,6 +78,11 @@ const handleRowClick = (row) => {
   emit('rowClick',row)
 }
 
+//checkbox点击
+const handleSelect = (select) => {
+  emit('rowSelect',select)
+}
+
 //页码发生变化
 const handleSizeChange = () => {
   emit('reload')
@@ -88,9 +94,15 @@ const handleCurrentChange = () => {
 }
 watch(
     () => props.dataSource, //这样才可以检测到对象里面的值
+    () => {
+      
+    }
 )
 watch(
     () => props.options, //这样才可以检测到对象里面的值
+    () => {
+      
+    }
 )
 onMounted(() => {
   // console.log(props.options)

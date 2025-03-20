@@ -54,8 +54,7 @@ import { ElMessage } from 'element-plus';
 //接受数据
 const props = defineProps({
   data:{
-    type:Array,
-    default:[]
+    type:Object,
   },
   treeData:{
     type:Array,

@@ -49,6 +49,11 @@ const router = createRouter({
           name: '八股文管理',
           component: () => import('@/views/content/question/index.vue'),
         },
+        {
+          path: '/content/exam',
+          name: '题库管理',
+          component: () => import('@/views/content/exam/index.vue'),
+        }
       ]
     }
   ],
