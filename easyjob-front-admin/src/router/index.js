@@ -53,6 +53,42 @@ const router = createRouter({
           path: '/content/exam',
           name: '题库管理',
           component: () => import('@/views/content/exam/index.vue'),
+        },
+        {
+          path: '/content/share',
+          name: '经验分享',
+          component: () => import('@/views/content/share/index.vue'),
+        }
+      ]
+    },
+    {
+      path: '/app',
+      name: 'app',
+      component: () => import('@/layout/index.vue'),
+      children: [
+        {
+          path: '/app/user',
+          name: '用户管理',
+          component: () => import('@/views/app/user/index.vue')
+        },
+        {
+          path: '/app/userDevice',
+          name: '设备管理',
+          component: () => import('@/views/app/userDevice/index.vue')
+        },
+        {
+          path: '/app/carouselList',
+          name: '轮播图管理',
+          component: () => import('@/views/app/carouselList/index.vue')
+        },
+        {
+          path: '/app/feedbackList',
+          name: '问题反馈',
+          component: () => import('@/views/app/feedbackList/index.vue')
+        }, {
+          path: '/app/updateList',
+          name: '版本更新',
+          component: () => import('@/views/app/updateList/index.vue')
         }
       ]
     }

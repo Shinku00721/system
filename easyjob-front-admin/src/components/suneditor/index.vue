@@ -26,6 +26,7 @@ const init = () => {
     const editor = suneditor.create(textareaRef.value,{
       lang:lang.zh_cn,//设置语言
       plugins:plugins, //加载插件
+      height:'130',
       buttonList : [
         ['undo', 'redo', 'font', 'fontSize', 'formatBlock','bold', 'underline','italic'],
         [ 'strike', 'subscript', 'superscript', 'removeFormat'],

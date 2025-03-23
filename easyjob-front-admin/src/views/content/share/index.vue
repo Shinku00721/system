@@ -20,18 +20,13 @@
         </el-form-item>
         </el-row>
         <el-row>
-          <el-form-item label="问题类型" style="width: 250px;" label-width="80px">
-            <el-select v-model="searchForm.questionType" placeholder="请选择问题类型">
-              <el-option :value="item.value" v-for="(item,index) in questionTypeList" :key="index" :label="item.label"></el-option>
-            </el-select>
-          </el-form-item>
           <el-form-item label-width="20px">
           <el-button-group >
             <el-button type="success" size="default">查询</el-button>
-            <el-button type="primary" size="default" @click="addExam">新增考题</el-button>
+            <el-button type="primary" size="default" @click="addQuestion">新增问题</el-button>
             <el-button type="primary" size="default" @click="importQuestion">批量导入</el-button>
-            <el-button type="primary" size="default" @click="postExamList">批量发布</el-button>
-            <el-button type="danger" size="default" @click="delExam" :disabled="questionIdList.length == 0">批量删除</el-button>
+            <el-button type="primary" size="default" @click="postQuestionList">批量发布</el-button>
+            <el-button type="danger" size="default" @click="delQuestion" :disabled="questionIdList.length == 0">批量删除</el-button>
           </el-button-group>
         </el-form-item>
         </el-row>
@@ -44,23 +39,17 @@
       :dataSource="tableData"
       :options="tableOptions"
       :pageOptions="pageOption"
-      @reload="loadExamList"
+      @reload="loadQuestionList"
       @rowSelect="select"
-      :selected="handleSelection"
       >
       <template #title="{row}">
         <slot>
           <span style="color: blue;cursor: pointer;" @click="showWindowDetail(row)">{{ row.title }}</span>
         </slot>
-        </template>
-        <template #difficultyLevel="{row}">
+      </template>
+      <template #difficultyLevel="{row}">
           <slot>
             <el-rate v-model="row.difficultyLevel" :disabled="true"/>
-          </slot>
-        </template>
-        <template #type="{row}">
-          <slot>
-            <span>{{ ExamType[row.questionType] }}</span>
           </slot>
         </template>
         <template #status="{row}">
@@ -70,32 +59,26 @@
         </template>
         <template #operation="{row}">
           <slot>
-            <el-button type="primary" size="small" @click="updateExam(row)">修改</el-button>
-            <el-button type="primary" size="small" @click="postExamList(row)" v-if="row.status === 0">发布</el-button>
-            <el-button type="primary" size="small" @click="cancelPostExamList(row)" v-else-if="row.status === 1">取消发布</el-button>
-            <el-button type="primary" size="small" @click="delExam(row)">删除</el-button>
+            <el-button type="primary" size="small" @click="updateQuestion(row)">修改</el-button>
+            <el-button type="primary" size="small" @click="postQuestionList(row)">发布</el-button>
+            <el-button type="primary" size="small" @click="delUser(row)">删除</el-button>
           </slot>
         </template>
       </Table>
     </el-card>
-    <!-- 新增考题 -->
-    <ExamEdit ref="examEditRef" @reload="loadExamList"></ExamEdit>
-    <!-- 导入考题 -->
-     <ImportData ref="importDataRef" :type="1" @reload="loadExamList"></ImportData>
   </div>
 </template>
 
 <script setup>
-import { nextTick, onMounted, ref,computed } from 'vue';
-import { ExamApi } from '@/api/exam';
-import ExamEdit from './examedit/index.vue'
-import { ExamType } from '@/utils/constant'
+import { nextTick, onMounted, ref } from 'vue';
+
+import { QuestionApi } from '@/api/question';
 import { ElMessage } from 'element-plus';
 import { ElMessageBox } from 'element-plus';
 const searchForm = ref({
   categoryId:'',
 })
-const examEditRef = ref()
+const questionEditRef = ref()
 const showDetailRef = ref()
 const tableData = ref([])
 const questionIdList = ref([])
@@ -118,7 +101,6 @@ const columns = ref([
   {
     label:'标题',
     prop:'title',
-    width:'150',
     scopedSlots:'title'
   },
   {
@@ -133,21 +115,19 @@ const columns = ref([
   },
   {
     label:'创建时间',
+    // prop:'status',
+    // formatter:(row) => {
+    //   return row.status === 1 ? '正常' : '禁用'
+    // }
     prop:'createTime',
-    width:'180'
+    width:'200'
   },
   {
     label:'难度',
-    scopedSlots:'difficultyLevel',
-    width:'150'
+    scopedSlots:'difficultyLevel'
   },
   {
-    label:'问题类型',
-    scopedSlots:'type',
-    width:'100'
-  },
-  {
-    width:'100',
+    width:'120',
     label:'发布状态',
     scopedSlots:'status'
   },{
@@ -157,10 +137,10 @@ const columns = ref([
 ])
 
 
-//获取题库信息的方法
-const loadExamList = () => {
+//获取八股文信息的方法
+const loadQuestionList = () => {
   let params = {pageNo:pageOption.value.currentPage,pageSize:pageOption.value.pageSize}
-  ExamApi.getExamList(params).then(res => {
+  QuestionApi.getQuestionList(params).then(res => {
   // console.log(res)
   // console.log(123)
   tableData.value  = res.list
@@ -169,7 +149,7 @@ const loadExamList = () => {
 }
 
 //删除八股文的方法
-const delExam = (row) => {
+const delUser = (row) => {
   ElMessageBox.confirm(
     '你确定要删除吗？',
     'Warning',
@@ -180,12 +160,12 @@ const delExam = (row) => {
     }
   ).then( () => {
     let params = {questionId:row.questionId}
-    ExamApi.delExam(params).then(() => {
+    QuestionApi.delQuestion(params).then(() => {
       ElMessage({
         type: 'success',
         message: '删除成功',
     })
-    loadExamList() //刷新数据
+    loadQuestionList() //刷新数据
     }).catch(() => {
       ElMessage({
       type: 'warning',
@@ -197,13 +177,12 @@ const delExam = (row) => {
 }
 
 //新增问题的方法
-const addExam = () => {
-  examEditRef.value.showDialog()
+const addQuestion = () => {
+  questionEditRef.value.showDialog()
 }
 //修改问题的方法
-const updateExam = (row) => {
-  examEditRef.value.showDialog(row)
-  console.log(row)
+const updateQuestion = (row) => {
+  questionEditRef.value.showDialog(row)
 }
 
 //批量导入的方法
@@ -241,7 +220,7 @@ const delQuestion = () => {
 }
 
 //批量发布的方法
-const postExamList = (row ={}) => {
+const postQuestionList = (row ={}) => {
   ElMessageBox.confirm(
     '你确定要发布吗？',
     {
@@ -256,48 +235,17 @@ const postExamList = (row ={}) => {
     }else if(questionIdList.value.length > 0){
       params.questionIds = questionIdList.value.join(',')
     }
-    ExamApi.postExamList(params).then(() => {
+    QuestionApi.postQuestion(params).then(() => {
       ElMessage({
         type: 'success',
         message: '发布成功',
       })
       if(row?.status == 0) row.status = 1
-      loadExamList() //刷新数据
+      loadQuestionList() //刷新数据
     }).catch(() => {
       ElMessage({
       type: 'warning',
       message: '发布失败',
-    })
-    })
-    
-  })
-}
-
-//取消发布的方法
-const cancelPostExamList = (row={}) => {
-  ElMessageBox.confirm(
-    '你确定要取消发布吗？',
-    {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      type: 'warning',
-    }
-  ).then( () => {
-    let params = {}
-    if(row?.status == 1){
-      params = {questionIds:row.questionId}
-    }
-    ExamApi.cancelPostExamList(params).then(() => {
-      ElMessage({
-        type: 'success',
-        message: '取消发布成功',
-      })
-      if(row?.status == 1) row.status = 0
-      loadExamList() //刷新数据
-    }).catch(() => {
-      ElMessage({
-      type: 'warning',
-      message: '取消发布失败',
     })
     })
     
@@ -311,24 +259,6 @@ const select = (select) => {
     return item.questionId
   })
 }
-//设置勾选条件
-const handleSelection = (row) => {
-  return row.status === 0
-}
-
-
-//计算问题类型属性
-const questionTypeList = computed(() => {
-  let questionTypeArray = []
-  for(let item in ExamType){
-    questionTypeArray.push({
-      label: ExamType[item],
-      value: item
-    })
-  }
-  return questionTypeArray
-})
-
 
 //展示问题详情
 
@@ -338,7 +268,7 @@ const showWindowDetail = (row) => {
 
 onMounted(() => {
   nextTick(() => {
-    loadExamList() //获取八股文信息
+    loadQuestionList() //获取八股文信息
   })
 })
 </script>

@@ -10,8 +10,8 @@
       :before-upload="beforeAvatarUpload"
       :on-change="handleChange"
     >
-      <img v-if="modelValue" :src="`http://localhost:9091/api/file/getImage/` + modelValue" class="avatar" />
-      <el-icon v-else class="avatar-uploader-icon"><Plus/></el-icon>
+      <img v-if="modelValue" :src="`http://localhost:9091/api/file/getImage/` + modelValue" class="avatar" :style="{width:width,height:height}"/>
+      <el-icon v-else class="avatar-uploader-icon" :style="{width:width +'px',height:height +'px'}"><Plus/></el-icon>
     </el-upload>
   </div>
 </template>
@@ -22,6 +22,14 @@ import request from '@/utils/request'
 const file = ref('')
 const uploadRef = ref()
 const props = defineProps({
+  width:{
+    type:Number,
+    default:100
+  },
+  height:{
+    type:Number,
+    default:100
+  },
   type:{
     type:Number
   },
@@ -52,8 +60,6 @@ const handleChange = (file,fileList) => {
 </script>
 <style lang="scss" scoped>
 .avatar-uploader .avatar {
-  width: 100px;
-  height: 100px;
   display: block;
 }
 
@@ -76,8 +82,8 @@ const handleChange = (file,fileList) => {
 .el-icon.avatar-uploader-icon {
   font-size: 28px;
   color: #8c939d;
-  width: 100px;
-  height: 100px;
+  /* width: 200px;
+  height: 200px; */
   text-align: center;
 }
 </style>

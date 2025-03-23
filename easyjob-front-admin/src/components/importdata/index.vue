@@ -31,6 +31,7 @@
 <script setup>
 import { ref } from 'vue';
 import { QuestionApi } from '@/api/question/index';
+import { ExamApi } from '@/api/exam/index';
 import ImportError from './component/importError/index.vue'
 const props = defineProps({
   type:{
@@ -47,10 +48,15 @@ const dialogConfig = ref({
 const emit = defineEmits(['reload'])
 //上传文件的方法
 const importErrorRef = ref()
-const uploadFile = (file) => {
+const uploadFile = async (file) => {
   let params = {}
+  let result = {}
   params.file = file.file
-  QuestionApi.uploadQuestion(params).then(result=>{
+  if(props.type == 0){
+    result =  await QuestionApi.uploadQuestion(params)
+  }else if(props.type == 1){
+    result =  await ExamApi.importExamList(params)
+  }
     if(result.length >0){
       console.log(result)
       //展示错误信息
@@ -61,7 +67,6 @@ const uploadFile = (file) => {
       // 刷新数据
       emit('reload')
     }
-  })
 }
 
 const showDialog = () => {

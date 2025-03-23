@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-table :data="dataSource" v-if="dataSource.length" :highlight-current-row="true" @row-click="handleRowClick" @selection-change="handleSelect">
-      <el-table-column type="selection" width="55" v-if="options.showSelection"/>
+      <el-table-column type="selection" width="55" v-if="options.showSelection" :selectable="selected"/>
       <!-- 序号列 -->
       <el-table-column type='index' label="序号" width="55" v-if="options.showIndex"/>
       <!-- 展示数据 -->
@@ -43,8 +43,8 @@
 </template>
 
 <script setup>
-import { onMounted,watch } from 'vue';
-const emit = defineEmits(['rowClick','reload','rowSelect'])
+import { nextTick, onMounted,watch } from 'vue';
+const emit = defineEmits(['rowClick','reload','rowSelect','handleSelection'])
 // const emit = defineEmits(['rowClick','rowSelected'])
 const props = defineProps({
   dataSource:{
@@ -63,6 +63,7 @@ const props = defineProps({
     type:Object,
     default:{}
   },
+  selected:Function
   // ectHeight:{
   //   default:70
   // },
@@ -83,6 +84,12 @@ const handleSelect = (select) => {
   emit('rowSelect',select)
 }
 
+const selected = (row) => {
+  if(props.selected){
+    return props.selected(row)
+  }
+}
+
 //页码发生变化
 const handleSizeChange = () => {
   emit('reload')
@@ -92,6 +99,11 @@ const handleSizeChange = () => {
 const handleCurrentChange = () => {
   emit('reload')
 }
+
+// //状态发布不进行选中该
+// const checkSelectable = (row) => {
+  
+// }
 watch(
     () => props.dataSource, //这样才可以检测到对象里面的值
     () => {
